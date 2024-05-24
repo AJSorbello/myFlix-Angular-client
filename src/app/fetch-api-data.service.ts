@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http
 import { Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
-const apiUrl = 'https://ajmovies-fc7e7627ec3d.herokuapp.com/';
+const apiUrl = 'https://ajmovies-fc7e7627ec3d.herokuapp.com';
 
 @Injectable({
   providedIn: 'root',
@@ -16,26 +16,25 @@ export class FetchApiDataService {
     return user ? JSON.parse(user).token : '';
   }
 
-  private handleError(error: HttpErrorResponse): any {
-    if (error.error instanceof ErrorEvent) {
-      console.error('Some error occurred:', error.error.message);
-    } else {
-      console.error(
-        `Error Status code ${error.status}, ` +
-        `Error body is: ${error.error}`
-      );
-    }
-    return throwError('Something bad happened; please try again later.');
+private handleError(error: HttpErrorResponse): any {
+  console.error('An error occurred:', error);  // log the entire error object
+  if (error.error instanceof ErrorEvent) {
+    console.error('Client-side error:', error.error.message);
+  } else {
+    console.error(
+      `Server returned code ${error.status}, ` +
+      `body was: ${error.error}`
+    );
   }
+  return throwError('Something bad happened; please try again later.');
+}
 
-  public userRegistration(userDetails: any): Observable<any> {
-    console.log(userDetails);
-    return this.http.post(apiUrl + '/users', userDetails)
-      .pipe(catchError(this.handleError));
-  }
-
-  public userLogin(userDetails: any): Observable<any> {
-    console.log(userDetails);
+public userRegistration(userDetails: any): Observable<any> {
+  return this.http.post(apiUrl + '/users', userDetails)
+    .pipe(map(this.extractResponseData), catchError(this.handleError));
+}
+public userLogin(userDetails: any): Observable<any> {
+   
     return this.http.post(apiUrl + `/login?username=${userDetails.username}&password=${userDetails.password}`, userDetails)
       .pipe(map(this.extractResponseData), catchError(this.handleError))
   }

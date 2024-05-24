@@ -17,7 +17,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class UserRegistrationFormComponent implements OnInit {
 
-    @Input() userData = { username: '', password: '', email: '', birthday: '' };
+    @Input() userData = { Fullname: '', Username: '', Password: '', Email: '', Birthday: '' };
 
     constructor(
         public fetchApiData: FetchApiDataService,
@@ -29,18 +29,17 @@ export class UserRegistrationFormComponent implements OnInit {
     }
 
     // This is the function responsible for sending the form inputs to the backend
-    registerUser(): void {
-        this.fetchApiData.userRegistration(this.userData).subscribe((result) => {
-            // Logic for a successful user registration goes here! (To be implemented)
-            this.dialogRef.close(); // This will close the modal on success!
-            this.snackBar.open("User create success", 'OK', {
-                duration: 2000
-            });
-        }, (result) => {
-            this.snackBar.open("User create fail", 'OK', {
-                duration: 2000
-            });
-        });
-    }
+ registerUser(): void {
+  this.fetchApiData.userRegistration(this.userData).subscribe((response) => {
+    this.dialogRef.close(); // This will close the modal on success!
+    this.snackBar.open("User create success", 'OK', {
+      duration: 2000
+    });
+  }, (response) => {
+    this.snackBar.open("User create fail", 'OK', {
+      duration: 2000
+    });
+  });
+}
 
 }
