@@ -11,10 +11,10 @@ const apiUrl = 'https://ajmovies-fc7e7627ec3d.herokuapp.com';
 export class FetchApiDataService {
   constructor(private http: HttpClient) {}
 
-  private getToken(): string {
-    const user = localStorage.getItem('user');
-    return user ? JSON.parse(user).token : '';
-  }
+private getToken(): string {
+  const token = localStorage.getItem('token');
+  return token ? token : '';
+}
 
 private handleError(error: HttpErrorResponse): any {
   console.error('An error occurred:', error);  // log the entire error object
