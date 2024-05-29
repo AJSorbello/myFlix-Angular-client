@@ -17,7 +17,8 @@
   background: linear-gradient(180deg, rgba(229,9,20,1) 0%, rgba(0,0,0,1) 100%);
   color: #ffffff;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4), 0 6px 20px 0 rgba(0, 0, 0, 0.4);
-
+  transition: all 0.3s ease;
+  
   img {
     width: 200px;
     height: 300px;
