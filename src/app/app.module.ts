@@ -22,12 +22,20 @@ import { MovieCardComponent } from './movie-card/movie-card.component';
 import { WelcomePageComponent } from './welcome-page/welcome-page.component';
 import { ProfilePageComponent } from './profile-page/profile-page.component';
 
+
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { SynopsisComponent } from './synopsis/synopsis.component';
+import { DirectorInfoComponent } from './director-info/director-info.component';
+import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
+import { DeleteUserComponent } from './delete-user/delete-user.component';
+import { ToolbarComponent } from './toolbar/toolbar.component';
+import { UpdateUserFormComponent } from './update-user-form/update-user-form.component';
+import { GenreComponent } from './genre/genre.component';
 
 const appRoutes: Routes = [
    { path: 'welcome', component: WelcomePageComponent },
    { path: 'movies', component: MovieCardComponent },
-  //  { path: 'profile', component: ProfileComponent},
+   { path: 'profile', component: ProfilePageComponent},
    { path: '', redirectTo: 'welcome', pathMatch: 'full' },
 ];
 
@@ -38,8 +46,16 @@ const appRoutes: Routes = [
     UserLoginFormComponent,
     MovieCardComponent,
     WelcomePageComponent,
-    ProfilePageComponent
+    ProfilePageComponent,
+    SynopsisComponent,
+    DirectorInfoComponent,
+    GenreComponent,
+    ConfirmationDialogComponent,
+    DeleteUserComponent,
+    ToolbarComponent,
+    UpdateUserFormComponent,
   ],
+
   imports: [
     BrowserModule,
     AppRoutingModule,

@@ -84,16 +84,16 @@ public userLogin(userDetails: any): Observable<any> {
     );
   }
 
-  public addFavouriteMovie(username: string, movieId: string): Observable<any> {
-    return this.http.post(apiUrl + `/users/${username}/movies/${movieId}`, {}, {headers: new HttpHeaders(
-    {
-        Authorization: `Bearer ${this.getToken()}`,
-    })}).pipe(
-        map(this.extractResponseData), catchError(this.handleError)
-    );
-  }
+  public getUserFavoriteMovies(username: string): Observable<any> {
+  const token = this.getToken();
+  const headers = new HttpHeaders({
+    'Authorization': `Bearer ${token}`,
+  });
+  return this.http.get(`${apiUrl}/users/${username}/movies`, { headers: headers })
+    .pipe(catchError(this.handleError));
+}
 
-  public deleteFavouriteMovie(username: string, movieId: string): Observable<any> {
+  public deleteFavoriteMovie(username: string, movieId: string): Observable<any> {
     return this.http.delete(apiUrl + `/users/${username}/movies/${movieId}`,
     {headers: new HttpHeaders({
         Authorization: `Bearer ${this.getToken()}`,

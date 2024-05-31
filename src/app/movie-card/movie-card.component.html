@@ -1,3 +1,5 @@
+<button mat-button routerLink="/profile">Profile</button>
+
 <div class="movie-card-container">
   <mat-card *ngFor="let movie of movies" class="mat-card">
     <div class="card-content">
@@ -9,9 +11,9 @@
       </mat-card-header>
       <img mat-card-image src="{{ movie.ImagePath }}" alt="{{ movie.Title }}" />
       <mat-card-actions>
-        <button mat-button>Genre</button>
-        <button mat-button>Director</button>
-        <button mat-button>Synopsis</button>
+        <button mat-button (click)="openGenreModal(movie)">Genre</button>
+        <button mat-button (click)="openDirectorModal(movie)">Director</button>
+        <button mat-button (click)="openSynopsisModal(movie)">Synopsis</button>
         <mat-icon (click)="toggleHeart(movie)">
           {{ movie.heartActive ? "favorite" : "favorite_border" }}
         </mat-icon>
