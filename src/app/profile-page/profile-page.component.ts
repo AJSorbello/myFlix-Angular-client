@@ -47,11 +47,16 @@ updateUser(): void {
     console.error(err)
   })
 }
- resetUser(): void {
-  try {
-    this.userData = JSON.parse(localStorage.getItem("user") || "{}");
-  } catch (error) {
-    console.error('Error parsing user data from local storage:', error);
+resetUser(): void {
+  const userDataString = localStorage.getItem("user");
+  if (userDataString && userDataString.trim() !== '') {
+    try {
+      this.userData = JSON.parse(userDataString.trim());
+    } catch (error) {
+      console.error('Error parsing user data from local storage:', error);
+      this.userData = {};
+    }
+  } else {
     this.userData = {};
   }
 }
@@ -69,22 +74,31 @@ getfavoriteMovies(): void {
 
 getUser(): void {
   let user;
-  try {
-    user = JSON.parse(localStorage.getItem("user") || "{}");
-  } catch (error) {
-    console.error('Error parsing user data from local storage:', error);
+  const userDataString = localStorage.getItem("user");
+  if (userDataString && userDataString.trim() !== '') {
+    try {
+      user = JSON.parse(userDataString.trim());
+    } catch (error) {
+      user = {};
+    }
+  } else {
     user = {};
   }
-  this.fetchApiData.getUser(user.Username).subscribe((res: any) => {
-    this.userData = {
-      ...res,
-      id: res._id,
-      password: user.password,
-      token: user.token
-    };
-    localStorage.setItem("user", JSON.stringify(this.userData));
-    this.getfavoriteMovies();
-  })
+
+  if (user && user.Username) {
+    this.fetchApiData.getUser(user.Username).subscribe((res: any) => {
+      this.userData = {
+        ...res,
+        id: res._id,
+        password: user.password,
+        token: user.token
+      };
+      localStorage.setItem("user", JSON.stringify(this.userData));
+      this.getfavoriteMovies();
+    })
+  } else {
+    console.error('Username is undefined');
+  }
 }
 
   removeFromFavorite(movie: any): void {
