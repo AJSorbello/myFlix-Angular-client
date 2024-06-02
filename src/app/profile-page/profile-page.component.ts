@@ -10,18 +10,22 @@ import { Router } from '@angular/router';
 export class ProfilePageComponent implements OnInit {
   userData: any = {};
   favoriteMovies: any[] = [];
-  constructor(
-    public fetchApiData: FetchApiDataService,
-    public router: Router
-  ) {
+ constructor(
+  public fetchApiData: FetchApiDataService,
+  public router: Router
+) {
+  const userDataObject = { Username: 'Raymond' }; // replace this with the actual user data
+  localStorage.setItem('user', JSON.stringify(userDataObject));
+  let userData = localStorage.getItem('user');
+  if (userData) {
     try {
-      this.userData = JSON.parse(localStorage.getItem("user") || "{}");
+      userData = JSON.parse(userData);
     } catch (error) {
       console.error('Error parsing user data from local storage:', error);
-      this.userData = {};
+      userData = null;
     }
   }
-
+}
   ngOnInit(): void {
   if (localStorage.getItem("user")) {
     this.getUser();
@@ -30,11 +34,13 @@ export class ProfilePageComponent implements OnInit {
   }
 }
 
+
 updateUser(): void {
   if (!this.userData.Username) {
     this.resetUser();
   }
-  this.fetchApiData.editUser(this.userData.Username, this.userData).subscribe((res: any) => {
+  this.fetchApiData.editUser(this.userData.Username, this.userData).subscribe({
+  next: (res: any) => {
     this.userData = {
       ...res,
       id: res._id,
@@ -43,9 +49,9 @@ updateUser(): void {
     };
     localStorage.setItem("user", JSON.stringify(this.userData));
     this.getfavoriteMovies();
-  }, (err: any) => {
-    console.error(err)
-  })
+  },
+  error: (err: any) => console.error(err)
+});
 }
 resetUser(): void {
   const userDataString = localStorage.getItem("user");
@@ -65,19 +71,20 @@ resetUser(): void {
   }
 
 getfavoriteMovies(): void {
-  this.fetchApiData.getUserFavoriteMovies(this.userData.Username).subscribe((res: any) => {
-    this.favoriteMovies = res;
-  }, (err: any) => {
-    console.error(err);
-  });
+ this.fetchApiData.getUserFavoriteMovies(this.userData.Username).subscribe({
+  next: (res: any) => this.favoriteMovies = res,
+  error: (err: any) => console.error(err)
+});
 }
 
 getUser(): void {
+  console.log('getUser method called');
   let user;
   const userDataString = localStorage.getItem("user");
   if (userDataString && userDataString.trim() !== '') {
     try {
       user = JSON.parse(userDataString.trim());
+      
     } catch (error) {
       user = {};
     }

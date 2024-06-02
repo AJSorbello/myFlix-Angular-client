@@ -92,7 +92,17 @@ public userLogin(userDetails: any): Observable<any> {
   return this.http.get(`${apiUrl}/users/${username}/movies`, { headers: headers })
     .pipe(catchError(this.handleError));
 }
-
+public addFavoriteMovie(username: string, movieId: string): Observable<any> {
+  return this.http.post(apiUrl + `/users/${username}/movies/${movieId}`, {},
+  {
+    headers: new HttpHeaders({
+      Authorization: `Bearer ${this.getToken()}`,
+    })
+  }).pipe(
+    map(this.extractResponseData), 
+    catchError(this.handleError)
+  );
+}
   public deleteFavoriteMovie(username: string, movieId: string): Observable<any> {
     return this.http.delete(apiUrl + `/users/${username}/movies/${movieId}`,
     {headers: new HttpHeaders({
