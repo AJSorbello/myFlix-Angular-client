@@ -10,22 +10,33 @@ import { Router } from '@angular/router';
 export class ProfilePageComponent implements OnInit {
   userData: any = {};
   favoriteMovies: any[] = [];
- constructor(
+
+  constructor(
   public fetchApiData: FetchApiDataService,
   public router: Router
 ) {
-  const userDataObject = { Username: 'Raymond' }; // replace this with the actual user data
-  localStorage.setItem('user', JSON.stringify(userDataObject));
-  let userData = localStorage.getItem('user');
+  let userData = localStorage.getItem('user'); // THIS IS THE LINE I"M HAVING TROUBLE WITH
   if (userData) {
     try {
-      userData = JSON.parse(userData);
+      this.userData = JSON.parse(userData);
     } catch (error) {
       console.error('Error parsing user data from local storage:', error);
-      userData = null;
+      this.userData = {};
     }
   }
 }
+//   const userDataObject = { Username: '' }; // replace this with the actual user data
+//   localStorage.setItem('user', JSON.stringify(userDataObject));
+//   let userData = localStorage.getItem('user');
+//   if (userData) {
+//     try {
+//       userData = JSON.parse(userData);
+//     } catch (error) {
+//       console.error('Error parsing user data from local storage:', error);
+//       userData = null;
+//     }
+//   }
+// }
   ngOnInit(): void {
   if (localStorage.getItem("user")) {
     this.getUser();
