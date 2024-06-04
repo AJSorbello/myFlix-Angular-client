@@ -1,4 +1,4 @@
-<button mat-button routerLink="/profile">Profile</button>
+<a routerLink="/profile" (click)="navigateToProfile()">Profile</a>
 
 <div class="movie-card-container">
   <mat-card *ngFor="let movie of movies" class="mat-card">

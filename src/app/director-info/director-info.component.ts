@@ -17,11 +17,11 @@ export class DirectorInfoComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.getDirectorDetails(this.data.movie.Director.Name);
+    this.getOneDirector(this.data.movie.Director.Name);
   }
 
-  getDirectorDetails(directorName: string): void {
-    this.fetchApiData.getDirector(directorName).subscribe((resp: any) => {
+  getOneDirector(directorName: string): void {
+    this.fetchApiData.getOneDirector(directorName).subscribe((resp: any) => {
       this.director = resp;
       console.log('Director Details:', this.director);
     }, (error) => {

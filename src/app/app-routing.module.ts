@@ -4,7 +4,7 @@ import { ProfilePageComponent } from './profile-page/profile-page.component';
 import { MovieCardComponent } from './movie-card/movie-card.component';
 
 const routes: Routes = [
-  { path: 'movies', component: MovieCardComponent },
+  { path: 'movie', component: MovieCardComponent },
   { path: 'profile', component: ProfilePageComponent },
 ];
 

@@ -31,6 +31,7 @@ import { DeleteUserComponent } from './delete-user/delete-user.component';
 import { ToolbarComponent } from './toolbar/toolbar.component';
 import { UpdateUserFormComponent } from './update-user-form/update-user-form.component';
 import { GenreComponent } from './genre/genre.component';
+import { FetchApiDataService } from './fetch-api-data.service'; // Import the service at the top of the file
 
 const appRoutes: Routes = [
    { path: 'welcome', component: WelcomePageComponent },
@@ -72,7 +73,7 @@ const appRoutes: Routes = [
     MatIconModule,
     FlexLayoutModule
   ],
-  providers: [],
+  providers: [FetchApiDataService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

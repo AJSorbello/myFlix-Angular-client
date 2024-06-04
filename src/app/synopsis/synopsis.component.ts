@@ -21,13 +21,13 @@ export class SynopsisComponent implements OnInit {
   }
 
   getMovieDetails(title: string): void {
-    this.fetchApiData.getOneMovies(title).subscribe((resp: any) => {
-      this.movie = resp;
-      console.log('Movie Details:', this.movie);
-    }, (error) => {
-      console.error('Error fetching movie details:', error);
-    });
-  }
+  this.fetchApiData.getOneMovie(title).subscribe((resp: any) => {
+    this.movie = resp;
+    console.log('Movie Details:', this.movie);
+  }, (error) => {
+    console.error('Error fetching movie details:', error);
+  });
+}
 
   closeDialog(): void {
     this.dialogRef.close();
