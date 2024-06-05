@@ -83,33 +83,29 @@ getMovies(): void {
   });
 }
 toggleFavorite(movieId: string): void {
-  const index = this.favoriteMovies.indexOf(movieId);
+  const movieIndex = this.movies.findIndex(movie => movie._id === movieId);
+  if (movieIndex < 0) return;  // Movie not found
 
-  if (index >= 0) {
+  const isFavorited = this.favoriteMovies.includes(movieId);
+
+  if (isFavorited) {
     // Movie is currently a favorite, so remove it from favorites
-    this.favoriteMovies.splice(index, 1);
-
-    // Update heartActive property of movie in movies array
-    const movieIndex = this.movies.findIndex(movie => movie._id === movieId);
-    if (movieIndex >= 0) {
+    this.fetchApiData.deleteFavoriteMovie(this.user.Username, movieId).subscribe(() => {
+      this.favoriteMovies = this.favoriteMovies.filter(id => id !== movieId);
       this.movies[movieIndex].heartActive = false;
-    }
+    }, (error: any) => {
+      console.error('Error removing movie from favorites:', error);
+    });
   } else {
     // Movie is not currently a favorite, so add it to favorites
-    this.favoriteMovies.push(movieId);
-
-    // Update heartActive property of movie in movies array
-    const movieIndex = this.movies.findIndex(movie => movie._id === movieId);
-    if (movieIndex >= 0) {
+    this.fetchApiData.addFavoriteMovie(this.user.Username, movieId).subscribe(() => {
+      this.favoriteMovies.push(movieId);
       this.movies[movieIndex].heartActive = true;
-    }
+    }, (error: any) => {
+      console.error('Error adding movie to favorites:', error);
+    });
   }
 }
-isFavorited(movieId: string): boolean {
-  // Assuming favoritedMovies is an array of movie IDs
-  return this.favoriteMovies.includes(movieId);
-}
-
   // Methods related to opening modals
   openGenreModal(movie: any): void {
     this.dialog.open(GenreComponent, {
