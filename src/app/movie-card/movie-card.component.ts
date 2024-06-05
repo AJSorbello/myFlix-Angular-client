@@ -91,6 +91,8 @@ toggleFavorite(movieId: string): void {
   if (isFavorited) {
     // Movie is currently a favorite, so remove it from favorites
     this.fetchApiData.deleteFavoriteMovie(this.user.Username, movieId).subscribe(() => {
+            console.log ('Removed movie with ID $(favoritedMovie} to favorites');
+
       this.favoriteMovies = this.favoriteMovies.filter(id => id !== movieId);
       this.movies[movieIndex].heartActive = false;
     }, (error: any) => {
@@ -99,6 +101,7 @@ toggleFavorite(movieId: string): void {
   } else {
     // Movie is not currently a favorite, so add it to favorites
     this.fetchApiData.addFavoriteMovie(this.user.Username, movieId).subscribe(() => {
+      console.log ('Added movie with ID $(favoritedMovie} to favorites');
       this.favoriteMovies.push(movieId);
       this.movies[movieIndex].heartActive = true;
     }, (error: any) => {

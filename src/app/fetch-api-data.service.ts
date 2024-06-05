@@ -51,7 +51,11 @@ export class FetchApiDataService {
       .get(apiUrl + 'movies', { headers: this.getHeaders() })
       .pipe(catchError(this.handleError));
   }
-
+public getMovie(id: string): Observable<any> {
+  return this.http
+    .get(apiUrl + 'movies/' + id, { headers: this.getHeaders() })
+    .pipe(catchError(this.handleError));
+}
   public getOneMovie(title: string): Observable<any> {
     return this.http
       .get(apiUrl + 'movies/' + title, { headers: this.getHeaders() })
