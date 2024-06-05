@@ -17,42 +17,47 @@ export class ProfilePageComponent implements OnInit {
     public router: Router
   ) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.getUser(); 
   }
 
-  getUser(): void {
-    let user;
-    let storedUser = localStorage.getItem('Username');
-    console.log('Stored user:', storedUser);
-    try {
-      user = JSON.parse(storedUser || '{}');
-    } catch (error) {
-      console.error('Failed to parse user:', error);
-      return;
-    }
-    if (!user.Username) {
-      console.error('User not found in local storage');
-      return;
-    }
-
-    this.fetchApiData.getUser(user.Username).subscribe({
-      next: (res: any) => {
-        this.userData = res;
-        this.getFavoriteMovies();
-      },
-      error: (err: any) => console.error(err)
-    });
+private getUser(): void {
+  let storedUser = localStorage.getItem('User');
+  console.log('Stored user:', storedUser);
+  if (!storedUser) {
+    console.error('No user found in local storage');
+    return;
   }
 
-  getFavoriteMovies(): void {
-    this.fetchApiData.getFavoriteMovies(this.userData.Username).subscribe({
-      next: (movies: any[]) => this.favoriteMovies = movies,
-      error: (err: any) => console.error(err)
-    });
+  let user;
+  try {
+    user = JSON.parse(storedUser);
+  } catch (error) {
+    console.error('Failed to parse user:', error);
+    return;
   }
 
-  deleteFavoriteMovie(MovieID: string): void {
+  if (!user) {
+    console.error('User not found in local storage');
+    return;
+  }
+
+  this.fetchApiData.getUser(user.Username).subscribe((res: any) => {
+    this.userData = res;
+    if (this.userData.favoriteMovies) {
+      this.getFavoriteMovies(this.userData.favoriteMovies);
+    }
+  });
+}
+private getFavoriteMovies(favoriteMovies: string[]): void {
+  this.fetchApiData.getAllMovies().subscribe((movies: any[]) => {
+    this.favoriteMovies = movies.filter((movie: any) =>
+      favoriteMovies.includes(movie._id)
+    );
+  });
+}
+
+  public deleteFavoriteMovie(MovieID: string): void {
     const movieTitle = this.favoriteMovies.find(movie => movie._id === MovieID)?.Title;
     if (!movieTitle) {
       console.error('Movie not found in favoriteMovies');
@@ -73,36 +78,37 @@ export class ProfilePageComponent implements OnInit {
     });
   }
 
-  resetUser(): void {
+  public resetUser(): void {
     this.userData = {};
     localStorage.removeItem('Username');
     this.router.navigate(["welcome"]);
   }
 
-  logout(): void {
-    localStorage.removeItem('Username');
-    this.router.navigate(["welcome"]);
-  }
+  public logout(): void {
+  localStorage.removeItem('User');
+  this.router.navigate(['welcome']);
+}
 
-  backToMovie(): void {
+  public backToMovie(): void {
     this.router.navigate(["movie"]);
   }
 
-  updateUser(): void {
-    this.fetchApiData.editUser(this.userData).subscribe({
-      next: (res: any) => {
-        this.userData = {
-          ...res,
-          id: res._id,
-          password: this.userData.password,
-          token: this.userData.token
-        };
-        if (typeof this.userData === 'object' && this.userData !== null) {
-          localStorage.setItem('Username', JSON.stringify(this.userData));
-        }
-        this.getFavoriteMovies();
-      },
-      error: (err: any) => console.error(err)
-    });
-  }
-}
+public updateUser(): void {
+  this.fetchApiData.editUser(this.userData).subscribe({
+    next: (res: any) => {
+      this.userData = {
+        ...res,
+        id: res._id,
+        password: this.userData.password,
+        token: this.userData.token
+      };
+      if (typeof this.userData === 'object' && this.userData !== null) {
+        localStorage.setItem('Username', JSON.stringify(this.userData));
+      }
+      if (this.userData.favoriteMovies) {
+        this.getFavoriteMovies(this.userData.favoriteMovies);
+      }
+    },
+    error: (err: any) => console.error(err)
+  });
+}}

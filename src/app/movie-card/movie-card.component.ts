@@ -47,46 +47,47 @@ getMovies(): void {
   }
   // Methods related to fetching data
   getUser(): void {
-    let user = localStorage.getItem('User'); // changed from 'user' to 'currentUser'
-    if (!user) {
-      console.error('No user found in local storage');
-      return;
-    }
-    
-    let parsedUser = JSON.parse(user);
-    try {
-      parsedUser = JSON.parse(user);
-    } catch (error) {
-      console.error('Error parsing user data from local storage:', error);
-      return;
-    }
-
-    const { Username } = parsedUser;
-    if (!Username) {
-      console.error('No username found in user data');
-      return;
-    }
-
-    this.fetchApiData.getUser(Username).subscribe((resp: any) => {
-      this.user = resp;
-      this.favoriteMovies = this.user.FavoriteMovies;
-    }, (error: any) => {
-      console.error('Error fetching user data:', error);
-    });
+  let user = localStorage.getItem('User');
+  if (!user) {
+    console.error('No user found in local storage');
+    return;
   }
+
+  let parsedUser;
+  try {
+    parsedUser = JSON.parse(user);
+  } catch (error) {
+    console.error('Error parsing user data from local storage:', error);
+    return;
+  }
+
+  const { Username } = parsedUser;
+  if (!Username) {
+    console.error('No username found in user data');
+    return;
+  }
+
+  this.fetchApiData.getUser(Username).subscribe((resp: any) => {
+    this.user = resp;
+    this.favoriteMovies = this.user.FavoriteMovies;
+  }, (error: any) => {
+    console.error('Error fetching user data:', error);
+  });
+}
 toggleFavorite(movie: any): void {
   try {
     movie.isFavorite = !movie.isFavorite;
     movie.heartActive = movie.isFavorite; 
 
-    let Username = localStorage.getItem('Username');
-    console.log('Username:', Username);
-
-    if (!Username) {
+    let user = localStorage.getItem('User');
+    if (!user) {
       console.error('No user found');
       return;
     }
-    
+
+    let parsedUser = JSON.parse(user);
+    let Username = parsedUser.Username;
+
     if (movie.isFavorite) {
       this.fetchApiData.addFavoriteMovie(Username, movie._id, movie.Title).subscribe(() => {
         console.log(`Added ${movie.Title} to favorites`);
