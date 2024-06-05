@@ -70,29 +70,30 @@ export class FetchApiDataService {
       .pipe(catchError(this.handleError));
   }
 
-  public getUser(username: string): Observable<any> {
-  if (!username) {
+ public getFavoriteMovies(Username: string): Observable<any> {
+  return this.http 
+    .get(apiUrl + 'users/' + Username + '/movies' , { headers: this.getHeaders() })
+    .pipe(catchError(this.handleError));
+}
+
+public addFavoriteMovie(Username: string, MovieID: string, movieTitle: string): Observable<any> {
+  return this.http
+    .post(apiUrl + 'users/' + Username + '/movies/' + MovieID, {}, { headers: this.getHeaders() })
+    .pipe(catchError(this.handleError));
+}
+
+public deleteFavoriteMovie(Username: string, MovieID: string, movieTitle: string): Observable<any> {
+  return this.http
+    .delete(apiUrl + 'users/' + Username + '/movies/' + MovieID, { headers: this.getHeaders() })
+    .pipe(catchError(this.handleError));
+}
+
+public getUser(Username: string): Observable<any> {
+  if (!Username) {
     throw new Error('Username is required');
   }
   return this.http
-    .get(apiUrl + 'users/' + username, { headers: this.getHeaders() })
-    .pipe(catchError(this.handleError));
-}
-
-  public getFavoriteMovies(username: string): Observable<any> {
-    return this.http 
-      .get(apiUrl + 'users/' + username + '/movies' , { headers: this.getHeaders() })
-      .pipe(catchError(this.handleError));
-  }
-public addFavoriteMovie(username: string, movieId: string, movieTitle: string): Observable<any> {
-  return this.http
-    .post(apiUrl + 'users/' + username + '/movies/' + movieId, {}, { headers: this.getHeaders() })
-    .pipe(catchError(this.handleError));
-}
-
-public deleteFavoriteMovie(username: string, movieId: string, movieTitle: string): Observable<any> {
-  return this.http
-    .delete(apiUrl + 'users/' + username + '/movies/' + movieId, { headers: this.getHeaders() })
+    .get(apiUrl + 'users/' + Username, { headers: this.getHeaders() })
     .pipe(catchError(this.handleError));
 }
 

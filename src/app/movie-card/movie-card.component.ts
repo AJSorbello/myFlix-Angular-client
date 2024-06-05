@@ -79,22 +79,22 @@ toggleFavorite(movie: any): void {
     movie.isFavorite = !movie.isFavorite;
     movie.heartActive = movie.isFavorite; 
 
-    let username = localStorage.getItem('Username');
-    console.log('username:', username);
+    let Username = localStorage.getItem('Username');
+    console.log('Username:', Username);
 
-    if (!username) {
+    if (!Username) {
       console.error('No user found');
       return;
     }
     
     if (movie.isFavorite) {
-      this.fetchApiData.addFavoriteMovie(username, movie._id, movie.Title).subscribe(() => {
+      this.fetchApiData.addFavoriteMovie(Username, movie._id, movie.Title).subscribe(() => {
         console.log(`Added ${movie.Title} to favorites`);
       }, (error: any) => {
         console.error('Error adding favorite movie:', error);
       });
     } else {
-      this.fetchApiData.deleteFavoriteMovie(username, movie._id, movie.Title).subscribe(() => {
+      this.fetchApiData.deleteFavoriteMovie(Username, movie._id, movie.Title).subscribe(() => {
         console.log(`Removed ${movie.Title} from favorites`);
       }, (error: any) => {
         console.error('Error deleting favorite movie:', error);
