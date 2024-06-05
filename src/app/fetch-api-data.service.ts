@@ -76,13 +76,13 @@ export class FetchApiDataService {
     .pipe(catchError(this.handleError));
 }
 
-public addFavoriteMovie(Username: string, MovieID: string, movieTitle: string): Observable<any> {
+public addFavoriteMovie(Username: string, MovieID: string): Observable<any> {
   return this.http
     .post(apiUrl + 'users/' + Username + '/movies/' + MovieID, {}, { headers: this.getHeaders() })
     .pipe(catchError(this.handleError));
 }
 
-public deleteFavoriteMovie(Username: string, MovieID: string, movieTitle: string): Observable<any> {
+public deleteFavoriteMovie(Username: string, MovieID: string): Observable<any> {
   return this.http
     .delete(apiUrl + 'users/' + Username + '/movies/' + MovieID, { headers: this.getHeaders() })
     .pipe(catchError(this.handleError));

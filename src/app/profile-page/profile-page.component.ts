@@ -64,7 +64,7 @@ private getFavoriteMovies(favoriteMovies: string[]): void {
       return;
     }
 
-    this.fetchApiData.deleteFavoriteMovie(this.userData.Username, MovieID, movieTitle).subscribe({
+    this.fetchApiData.deleteFavoriteMovie(this.userData.Username, MovieID).subscribe({
       next: (res: any) => {
         this.favoriteMovies = res;
         // Remove the movie from favoriteMovies

@@ -75,35 +75,39 @@ getMovies(): void {
   });
 }
 toggleFavorite(movie: any): void {
-  try {
-    movie.isFavorite = !movie.isFavorite;
-    movie.heartActive = movie.isFavorite; 
-
-    let user = localStorage.getItem('User');
-    if (!user) {
-      console.error('No user found');
-      return;
-    }
-
-    let parsedUser = JSON.parse(user);
-    let Username = parsedUser.Username;
-
-    if (movie.isFavorite) {
-      this.fetchApiData.addFavoriteMovie(Username, movie._id, movie.Title).subscribe(() => {
-        console.log(`Added ${movie.Title} to favorites`);
-      }, (error: any) => {
-        console.error('Error adding favorite movie:', error);
-      });
-    } else {
-      this.fetchApiData.deleteFavoriteMovie(Username, movie._id, movie.Title).subscribe(() => {
-        console.log(`Removed ${movie.Title} from favorites`);
-      }, (error: any) => {
-        console.error('Error deleting favorite movie:', error);
-      });
-    }
-  } catch (error) {
-    console.error('Error in toggleFavorite:', error);
+  let user = localStorage.getItem('User');
+  if (!user) {
+    console.error('No user found');
+    return;
   }
+
+  let parsedUser = JSON.parse(user);
+  let Username = parsedUser.Username;
+
+  // Check if the movie is already favorited
+  if (this.isFavorited(movie._id)) {
+    // If it is, remove it from favorites
+    this.fetchApiData.deleteFavoriteMovie(Username, movie._id).subscribe(() => {
+      console.log(`Removed ${movie.Title} from favorites`);
+      // Update the favorite status of the movie
+      movie.heartActive = false;
+    }, (error: any) => {
+      console.error('Error deleting favorite movie:', error);
+    });
+  } else {
+    // If it's not, add it to favorites
+    this.fetchApiData.addFavoriteMovie(Username, movie._id).subscribe(() => {
+      console.log(`Added ${movie.Title} to favorites`);
+      // Update the favorite status of the movie
+      movie.heartActive = true;
+    }, (error: any) => {
+      console.error('Error adding favorite movie:', error);
+    });
+  }
+}
+isFavorited(movieId: string): boolean {
+  // Assuming favoritedMovies is an array of movie IDs
+  return this.favoriteMovies.includes(movieId);
 }
 
   // Methods related to opening modals
