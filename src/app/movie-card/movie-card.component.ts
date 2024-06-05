@@ -5,33 +5,38 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { GenreComponent } from '../genre/genre.component';
 import { DirectorInfoComponent } from '../director-info/director-info.component';
 import { SynopsisComponent } from '../synopsis/synopsis.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-movie-card',
   templateUrl: './movie-card.component.html',
-  styleUrls: ['./movie-card.component.scss']
-})
-export class MovieCardComponent implements OnInit {
-  @Input()
-  isFromFav: boolean = false;
+  styleUrls: ['./movie-card.component.scss'],
 
+})
+export class MovieCardComponent {
   movies: any[] = [];
+  user: any = {};
+  favorites: any[] = [];
   genre: any = '';
   director: any = '';
-  user: any = {};
   favoriteMovies: any[] = [];
+username: string | null = null;
 
-  constructor(
-    public fetchApiData: FetchApiDataService,
-    public dialog: MatDialog,
-    public snackBar: MatSnackBar
-  ) {}
+ constructor(
+  public fetchApiData: FetchApiDataService,
+  public dialog: MatDialog,
+  public snackBar: MatSnackBar,
+  private router: Router,
+) {
+  this.toggleFavorite = this.toggleFavorite.bind(this);
+}
 
   ngOnInit(): void {
-    this.getMovies();
-  }
+      this.getMovies();
+      this.getUser();
+    }
 
-  getMovies(): void {
+getMovies(): void {
     this.fetchApiData.getAllMovies().subscribe((resp: any) => {
       this.movies = resp.map((movie: any) => ({
         ...movie,
@@ -40,24 +45,67 @@ export class MovieCardComponent implements OnInit {
       console.log('Movies array:', this.movies);
     });
   }
-
- getFavorites(): void {
-  let user = localStorage.getItem('user');
-  if (user) {
+  // Methods related to fetching data
+  getUser(): void {
+    let user = localStorage.getItem('User'); // changed from 'user' to 'currentUser'
+    if (!user) {
+      console.error('No user found in local storage');
+      return;
+    }
+    
+    let parsedUser = JSON.parse(user);
     try {
-      let parsedUser = JSON.parse(user);
-      this.favoriteMovies = parsedUser.favoriteMovies;
+      parsedUser = JSON.parse(user);
     } catch (error) {
       console.error('Error parsing user data from local storage:', error);
-      this.favoriteMovies = [];
+      return;
     }
+
+    const { Username } = parsedUser;
+    if (!Username) {
+      console.error('No username found in user data');
+      return;
+    }
+
+    this.fetchApiData.getUser(Username).subscribe((resp: any) => {
+      this.user = resp;
+      this.favoriteMovies = this.user.FavoriteMovies;
+    }, (error: any) => {
+      console.error('Error fetching user data:', error);
+    });
+  }
+toggleFavorite(movie: any): void {
+  try {
+    movie.isFavorite = !movie.isFavorite;
+    movie.heartActive = movie.isFavorite; 
+
+    let username = localStorage.getItem('Username');
+    console.log('username:', username);
+
+    if (!username) {
+      console.error('No user found');
+      return;
+    }
+    
+    if (movie.isFavorite) {
+      this.fetchApiData.addFavoriteMovie(username, movie._id, movie.Title).subscribe(() => {
+        console.log(`Added ${movie.Title} to favorites`);
+      }, (error: any) => {
+        console.error('Error adding favorite movie:', error);
+      });
+    } else {
+      this.fetchApiData.deleteFavoriteMovie(username, movie._id, movie.Title).subscribe(() => {
+        console.log(`Removed ${movie.Title} from favorites`);
+      }, (error: any) => {
+        console.error('Error deleting favorite movie:', error);
+      });
+    }
+  } catch (error) {
+    console.error('Error in toggleFavorite:', error);
   }
 }
 
-  toggleHeart(movie: any): void {
-    movie.heartActive = !movie.heartActive;
-  }
-
+  // Methods related to opening modals
   openGenreModal(movie: any): void {
     this.dialog.open(GenreComponent, {
       data: { movie: movie }
@@ -75,65 +123,7 @@ export class MovieCardComponent implements OnInit {
       data: { movie: movie }
     });
   }
-
-  isFav(movie: any): boolean {
-    return this.favoriteMovies.includes(movie.title);
-  }
-
-  toggleFav(movie: any): void {
-    console.log('toggleFav called with movie:', movie);
-    const isFavorite = this.isFav(movie);
-    console.log('isFavorite:', isFavorite);
-    isFavorite ? this.deleteFavMovies(movie) : this.addFavMovies(movie);
-  }
-
-  addFavMovies(movie: any): void {
-    let user = localStorage.getItem('user');
-
-    if (user) {
-      let parsedUser = JSON.parse(user);
-      console.log('user:', parsedUser);
-      console.log(user);
-
-      this.fetchApiData
-        .addFavoriteMovie(movie.title, parsedUser.username)
-        .subscribe((resp: any) => {
-          console.log('server response:', resp);
-          localStorage.setItem('user', JSON.stringify(resp));
-          this.favoriteMovies.push(movie.title);
-          console.log(this.favoriteMovies);
-          this.snackBar.open(
-            `${movie.title} has been added to your favorites`,
-            'OK',
-            {
-              duration: 3000,
-            }
-          );
-        });
-    }
-  }
-navigateToProfile(): void {
-  console.log('Navigating to profile page');
-}
-  deleteFavMovies(movie: any): void {
-    let user = localStorage.getItem('user');
-    if (user) {
-      let parsedUser = JSON.parse(user);
-      this.fetchApiData
-        .deleteFavoriteMovie(movie.title, parsedUser.username)
-        .subscribe((resp) => {
-          localStorage.setItem('user', JSON.stringify(resp));
-          this.favoriteMovies = this.favoriteMovies.filter(
-            (title) => title !== movie.title
-          );
-          this.snackBar.open(
-            `${movie.title} has been removed from your favorites`,
-            'OK',
-            {
-              duration: 3000,
-            }
-          );
-        });
-    }
+    navigateToProfile(): void {
+    this.router.navigate(['/profile']);
   }
 }

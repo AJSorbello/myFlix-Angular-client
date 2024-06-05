@@ -21,39 +21,44 @@ export class ProfilePageComponent implements OnInit {
   ngOnInit(): void {
   this.getUser(); 
 }
-  getUser(): void {
-    let user;
-    try {
-      user = JSON.parse(localStorage.getItem('user') || '{}');
-    } catch (error) {
-      console.error('Failed to parse user:', error);
-      return;
-    }
-
-    if (!user.Username) {
-      console.error('User not found in local storage');
-      return;
-    }
-
-    this.fetchApiData.getUser(user.Username).pipe(
-      tap((res: any) => {
-        this.userData = res;
-        this.getFavoriteMovies();
-      })
-    ).subscribe({
-      error: (err: any) => console.error(err)
-    });
+getUser(): void {
+  let user;
+  let storedUser = localStorage.getItem('user');
+  console.log('Stored user:', storedUser);
+  try {
+    user = JSON.parse(storedUser || '{}');
+  } catch (error) {
+    console.error('Failed to parse user:', error);
+    return;
   }
+  if (!user.Username) {
+    console.error('User not found in local storage');
+    return;
+  }
+
+  this.fetchApiData.getUser(user.Username).subscribe({
+    next: (res: any) => {
+      this.userData = res;
+      this.getFavoriteMovies();
+    },
+    error: (err: any) => console.error(err)
+  });
+}
 
 getFavoriteMovies(): void {
   this.fetchApiData.getFavoriteMovies(this.userData.Username).subscribe({
-    next: (res: any) => this.favoriteMovies = res, 
-    error:(err:any) => 
-      console.error(err)
-    });
+    next: (movies: any[]) => this.favoriteMovies = movies,
+    error: (err: any) => console.error(err)
+  });
 }
- deleteFavoriteMovie(movieId: string): void {
-  this.fetchApiData.deleteFavoriteMovie(this.userData.Username, movieId).subscribe({
+deleteFavoriteMovie(movieId: string): void {
+  const movieTitle = this.favoriteMovies.find(movie => movie._id === movieId)?.Title;
+  if (!movieTitle) {
+    console.error('Movie not found in favoriteMovies');
+    return;
+  }
+
+  this.fetchApiData.deleteFavoriteMovie(this.userData.Username, movieId, movieTitle).subscribe({
     next: (res: any) => {
       this.favoriteMovies = res;
       // Remove the movie from favoriteMovies
@@ -61,20 +66,18 @@ getFavoriteMovies(): void {
       if (index > -1) {
         this.userData.FavoriteMovies.splice(index, 1);
       }
-      localStorage.setItem('user', JSON.stringify(this.userData));
+      localStorage.setItem('username', JSON.stringify(this.userData));
     },
-    error: (err: any) => {
-      console.error(err);
-    }
+    error: (err: any) => console.error(err)
   });
 }
   resetUser(): void {
     this.userData = {};
-    localStorage.removeItem('user');
+    localStorage.removeItem('username');
     this.router.navigate(["welcome"]);
   }
   logout(): void {
-  localStorage.removeItem('user');
+  localStorage.removeItem('username');
   this.router.navigate(["welcome"]);
 }
 
@@ -82,19 +85,20 @@ getFavoriteMovies(): void {
     this.router.navigate(["movie"]);
   }
 
-  updateUser(): void {
-    this.fetchApiData.editUser(this.userData).subscribe({
-      next: (res: any) => {
-        this.userData = {
-          ...res,
-          id: res._id,
-          password: this.userData.password,
-          token: this.userData.token
-        };
-        localStorage.setItem("user", JSON.stringify(this.userData));
-        this.getFavoriteMovies();
-      },
-      error: (err: any) => console.error(err)
-    });
-  }
-}
+updateUser(): void {
+  this.fetchApiData.editUser(this.userData).subscribe({
+    next: (res: any) => {
+      this.userData = {
+        ...res,
+        id: res._id,
+        password: this.userData.password,
+        token: this.userData.token
+      };
+      if (typeof this.userData === 'object' && this.userData !== null) {
+        localStorage.setItem('user', JSON.stringify(this.userData));
+      }
+      this.getFavoriteMovies();
+    },
+    error: (err: any) => console.error(err)
+  });
+}}
