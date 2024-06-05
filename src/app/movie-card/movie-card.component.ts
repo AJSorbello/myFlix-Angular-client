@@ -7,6 +7,14 @@ import { DirectorInfoComponent } from '../director-info/director-info.component'
 import { SynopsisComponent } from '../synopsis/synopsis.component';
 import { Router } from '@angular/router';
 
+interface User {
+  Username: string;
+  Password: string;
+  Email: string;
+  Birthday: Date;
+FullName: string;
+FavoriteMovies: string[];
+}
 @Component({
   selector: 'app-movie-card',
   templateUrl: './movie-card.component.html',
@@ -37,14 +45,14 @@ username: string | null = null;
     }
 
 getMovies(): void {
-    this.fetchApiData.getAllMovies().subscribe((resp: any) => {
-      this.movies = resp.map((movie: any) => ({
-        ...movie,
-        heartActive: false
-      }));
-      console.log('Movies array:', this.movies);
-    });
-  }
+  this.fetchApiData.getAllMovies().subscribe((resp: any) => {
+    this.movies = resp.map((movie: any) => ({
+      ...movie,
+      heartActive: this.favoriteMovies.includes(movie._id)
+    }));
+    console.log('Movies array:', this.movies);
+  });
+}
   // Methods related to fetching data
   getUser(): void {
   let user = localStorage.getItem('User');
@@ -74,35 +82,27 @@ getMovies(): void {
     console.error('Error fetching user data:', error);
   });
 }
-toggleFavorite(movie: any): void {
-  let user = localStorage.getItem('User');
-  if (!user) {
-    console.error('No user found');
-    return;
-  }
+toggleFavorite(movieId: string): void {
+  const index = this.favoriteMovies.indexOf(movieId);
 
-  let parsedUser = JSON.parse(user);
-  let Username = parsedUser.Username;
+  if (index >= 0) {
+    // Movie is currently a favorite, so remove it from favorites
+    this.favoriteMovies.splice(index, 1);
 
-  // Check if the movie is already favorited
-  if (this.isFavorited(movie._id)) {
-    // If it is, remove it from favorites
-    this.fetchApiData.deleteFavoriteMovie(Username, movie._id).subscribe(() => {
-      console.log(`Removed ${movie.Title} from favorites`);
-      // Update the favorite status of the movie
-      movie.heartActive = false;
-    }, (error: any) => {
-      console.error('Error deleting favorite movie:', error);
-    });
+    // Update heartActive property of movie in movies array
+    const movieIndex = this.movies.findIndex(movie => movie._id === movieId);
+    if (movieIndex >= 0) {
+      this.movies[movieIndex].heartActive = false;
+    }
   } else {
-    // If it's not, add it to favorites
-    this.fetchApiData.addFavoriteMovie(Username, movie._id).subscribe(() => {
-      console.log(`Added ${movie.Title} to favorites`);
-      // Update the favorite status of the movie
-      movie.heartActive = true;
-    }, (error: any) => {
-      console.error('Error adding favorite movie:', error);
-    });
+    // Movie is not currently a favorite, so add it to favorites
+    this.favoriteMovies.push(movieId);
+
+    // Update heartActive property of movie in movies array
+    const movieIndex = this.movies.findIndex(movie => movie._id === movieId);
+    if (movieIndex >= 0) {
+      this.movies[movieIndex].heartActive = true;
+    }
   }
 }
 isFavorited(movieId: string): boolean {
