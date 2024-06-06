@@ -28,7 +28,7 @@ export class MovieCardComponent {
   genre: any = '';
   director: any = '';
   favoriteMovies: any[] = [];
-username: string | null = null;
+  username: string | null = null;
 
  constructor(
   public fetchApiData: FetchApiDataService,

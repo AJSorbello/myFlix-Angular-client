@@ -68,12 +68,11 @@ public getMovie(id: string): Observable<any> {
       .pipe(catchError(this.handleError));
   }
 
-  public getOneGenre(genreName: string): Observable<any> {
-    return this.http
-      .get(apiUrl + 'genre/' + genreName, { headers: this.getHeaders() })
-      .pipe(catchError(this.handleError));
-  }
-
+public getOneGenre(genreName: string): Observable<any> {
+  return this.http
+    .get(apiUrl + 'movies/genres/' + genreName, { headers: this.getHeaders() })
+    .pipe(catchError(this.handleError));
+}
  public getFavoriteMovies(Username: string): Observable<any> {
   return this.http 
     .get(apiUrl + 'users/' + Username + '/movies' , { headers: this.getHeaders() })

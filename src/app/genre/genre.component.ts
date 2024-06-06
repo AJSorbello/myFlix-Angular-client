@@ -21,18 +21,18 @@ export class GenreComponent implements OnInit {
     this.getGenreDetails(this.data.movie.Genre.Name);
   }
 
- getGenreDetails(genreName: string): void {
-  this.fetchApiData.getOneGenre(genreName).pipe(
-    tap((resp: any) => {
-      this.genre = resp;
-      console.log('Genre Details:', this.genre);
-    }),
-    catchError((error) => {
-      console.error('Error fetching genre details:', error);
-      return of(null);
-    })
-  ).subscribe();
-}
+  getGenreDetails(genreName: string): void {
+    this.fetchApiData.getOneGenre(genreName).pipe(
+      tap((resp: any) => {
+        this.genre = resp; // Assign resp to this.genre
+        console.log('Genre Details:', this.genre);
+      }),
+      catchError((error) => {
+        console.error('Error fetching genre details:', error);
+        return of(null);
+      })
+    ).subscribe();
+  }
 
   closeDialog(): void {
     this.dialogRef.close();

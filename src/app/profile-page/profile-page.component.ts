@@ -62,14 +62,15 @@ export class ProfilePageComponent implements OnInit {
       }
     });
   }
-private getFavoriteMovies(favoriteMovies: string[]): void {
-  this.favoriteMovies = [];
-  favoriteMovies.forEach(movieTitle => {
-    this.fetchApiData.getOneMovie(movieTitle).subscribe((movie: any) => {
-      this.favoriteMovies.push(movie);
+
+  private getFavoriteMovies(favoriteMovies: string[]): void {
+    this.favoriteMovies = [];
+    favoriteMovies.forEach(movieId => {
+      this.fetchApiData.getMovie(movieId).subscribe((movie: any) => {
+        this.favoriteMovies.push(movie);
+      });
     });
-  });
-}
+  }
 
   public deleteFavoriteMovie(MovieID: string): void {
     const movieTitle = this.favoriteMovies.find(movie => movie._id === MovieID)?.Title;
