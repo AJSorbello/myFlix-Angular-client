@@ -8,12 +8,12 @@ import { Router } from '@angular/router';
   styleUrls: ['./profile-page.component.scss']
 })
 export class ProfilePageComponent implements OnInit {
- userData: any = {
-  Username: '',
-  Password: '',
-  Email: '',
-  Birthday: '',
-  FavoriteMovies: [] as string[], // initialize FavoriteMovies to an empty array
+  userData: any = {
+    Username: '',
+    Password: '',
+    Email: '',
+    Birthday: '',
+    FavoriteMovies: [] as string[], // initialize FavoriteMovies to an empty array
   };
   formUserData: any = {
     Username: '',
@@ -32,19 +32,24 @@ export class ProfilePageComponent implements OnInit {
   ) {}
 
   public ngOnInit(): void {
-    this.getUser(); 
     this.getMovies();
+    this.getUser(); 
   }
-private getMovies(): void {
-  this.fetchApiData.getAllMovies().subscribe((res: any) => {
-    this.movies = res;
-    this.filterFavoriteMovies();
-  });
-}
 
-private filterFavoriteMovies(): void {
-  this.favoriteMovies = this.movies.filter(movie => this.userData.FavoriteMovies.includes(movie._id));
-}
+  private getMovies(): void {
+    this.fetchApiData.getAllMovies().subscribe((res: any) => {
+      this.movies = res.map((movie: any) => ({
+        ...movie,
+        director: movie.Director.Name,
+        image: movie.ImagePath
+      }));
+    });
+  }
+
+  private filterFavoriteMovies(): void {
+    this.favoriteMovies = this.movies.filter(movie => this.userData.FavoriteMovies.includes(movie._id));
+  }
+
   private getUser(): void {
     let storedUser = localStorage.getItem('Username');
     console.log('Stored user:', storedUser);
@@ -68,18 +73,9 @@ private filterFavoriteMovies(): void {
 
     this.fetchApiData.getUser(user.Username).subscribe((res: any) => {
       this.userData = res;
-      if (this.userData.favoriteMovies) {
-        this.getFavoriteMovies(this.userData.favoriteMovies);
+      if (this.userData.FavoriteMovies) {
+        this.filterFavoriteMovies();
       }
-    });
-  }
-
-  private getFavoriteMovies(favoriteMovies: string[]): void {
-    this.favoriteMovies = [];
-    favoriteMovies.forEach(movieId => {
-      this.fetchApiData.getMovie(movieId).subscribe((movie: any) => {
-        this.favoriteMovies.push(movie);
-      });
     });
   }
 
@@ -99,7 +95,7 @@ private filterFavoriteMovies(): void {
           this.userData.FavoriteMovies.splice(index, 1);
         }
         localStorage.setItem('Username', JSON.stringify(this.userData));
-        this.refreshFavoriteMovies();
+        this.filterFavoriteMovies();
       },
       error: (err: any) => console.error(err)
     });
@@ -132,18 +128,9 @@ private filterFavoriteMovies(): void {
         if (typeof this.userData === 'object' && this.userData !== null) {
           localStorage.setItem('Username', JSON.stringify(this.userData));
         }
-        this.refreshFavoriteMovies();
+        this.filterFavoriteMovies();
       },
       error: (err: any) => console.error(err)
-    });
-  }
-
-  private refreshFavoriteMovies(): void {
-    this.fetchApiData.getUser(this.userData.Username).subscribe((res: any) => {
-      this.userData = res;
-      if (this.userData.favoriteMovies) {
-        this.getFavoriteMovies(this.userData.favoriteMovies);
-      }
     });
   }
 }
