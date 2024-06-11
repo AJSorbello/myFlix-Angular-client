@@ -8,11 +8,12 @@ import { Router } from '@angular/router';
   styleUrls: ['./profile-page.component.scss']
 })
 export class ProfilePageComponent implements OnInit {
-  userData: any = {
-    Username: '',
-    password: '',
-    email: '',
-    birthDate: '',
+ userData: any = {
+  Username: '',
+  Password: '',
+  Email: '',
+  Birthday: '',
+  FavoriteMovies: [] as string[], // initialize FavoriteMovies to an empty array
   };
   formUserData: any = {
     Username: '',
@@ -32,8 +33,18 @@ export class ProfilePageComponent implements OnInit {
 
   public ngOnInit(): void {
     this.getUser(); 
+    this.getMovies();
   }
+private getMovies(): void {
+  this.fetchApiData.getAllMovies().subscribe((res: any) => {
+    this.movies = res;
+    this.filterFavoriteMovies();
+  });
+}
 
+private filterFavoriteMovies(): void {
+  this.favoriteMovies = this.movies.filter(movie => this.userData.FavoriteMovies.includes(movie._id));
+}
   private getUser(): void {
     let storedUser = localStorage.getItem('Username');
     console.log('Stored user:', storedUser);

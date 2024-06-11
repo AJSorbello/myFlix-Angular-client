@@ -93,7 +93,7 @@
       <mat-card-header>
         <mat-card-title>{{ movie.title }}</mat-card-title>
         <mat-card-subtitle
-          >Directed by: {{ movie.director.name }}</mat-card-subtitle
+          >Directed by: {{ movie.director?.Name }}</mat-card-subtitle
         >
       </mat-card-header>
       <img src="{{ movie.imagePath }}" alt="{{ movie.title }}" />
