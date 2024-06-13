@@ -15,7 +15,7 @@ export class UserLoginFormComponent implements OnInit {
 
   constructor(
     public fetchApiData: FetchApiDataService,
-    public dialogRef: MatDialogRef<UserLoginFormComponent>,
+    public dialogRef: MatDialogRef<UserLoginFormComponent>, // Uncommented MatDialogRef
     public snackBar: MatSnackBar,
     private router: Router
   ) { }

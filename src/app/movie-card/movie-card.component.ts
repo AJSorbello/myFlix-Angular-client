@@ -128,7 +128,4 @@ toggleFavorite(movieId: string): void {
       data: { movie: movie }
     });
   }
-    navigateToProfile(): void {
-    this.router.navigate(['/profile']);
-  }
 }

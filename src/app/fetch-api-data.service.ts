@@ -15,13 +15,14 @@ export class FetchApiDataService {
     this.token = localStorage.getItem('token') || '';
   }
 
-  private getHeaders(): HttpHeaders {
-    let headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + this.token
-    });
-    return headers;
-  }
+private getHeaders(): HttpHeaders {
+  const token = localStorage.getItem('token'); // Retrieve the token from local storage
+  let headers = new HttpHeaders({
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer ' + token
+  });
+  return headers;
+}
 
   private handleError(error: any) {
     let errorMessage = '';
