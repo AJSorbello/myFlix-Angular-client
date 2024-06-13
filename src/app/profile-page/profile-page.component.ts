@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FetchApiDataService } from '../fetch-api-data.service';
 import { Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
+import { forkJoin } from 'rxjs';
 
 
 @Component({
@@ -37,6 +38,7 @@ export class ProfilePageComponent implements OnInit {
   public ngOnInit(): void {
     this.getMovies();
     this.getUser(); 
+    this.loadData();
   }
 
   private getMovies(): void {
@@ -49,6 +51,27 @@ export class ProfilePageComponent implements OnInit {
     });
   }
 
+private loadData(): void {
+  const username = localStorage.getItem('Username');
+  if (!username) {
+    console.error('Username not found in local storage');
+    return;
+  }
+
+  forkJoin({
+    movies: this.fetchApiData.getAllMovies(),
+    user: this.fetchApiData.getUser(JSON.parse(username).Username)
+  }).subscribe(({ movies, user }) => {
+    this.movies = movies.map((movie: any) => ({
+      ...movie,
+      director: movie.Director.Name,
+      image: movie.ImagePath
+    }));
+
+    this.userData = user;
+    this.userData.Birthday = this.datePipe.transform(this.userData.Birthday, 'yyyy-MM-dd', 'UTC');
+  });
+}
   private filterFavoriteMovies(): void {
     this.favoriteMovies = this.movies.filter(movie => this.userData.FavoriteMovies.includes(movie._id));
   }
