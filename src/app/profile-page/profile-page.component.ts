@@ -135,15 +135,6 @@ this.userData.Birthday = this.datePipe.transform(this.userData.Birthday, 'yyyy-M
     this.router.navigate(["welcome"]);
   }
 
-  public logout(): void {
-    localStorage.removeItem('Username');
-    this.router.navigate(['welcome']);
-  }
-
-  public backToMovie(): void {
-    this.router.navigate(["movie"]);
-  }
-
   public updateUser(): void {
     this.fetchApiData.editUser(this.userData).subscribe({
       next: (res: any) => {

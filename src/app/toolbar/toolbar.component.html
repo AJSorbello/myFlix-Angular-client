@@ -1,8 +1,10 @@
 <!-- This toolbar will be displayed on screens larger than 599px -->
 <mat-toolbar color="primary" *ngIf="(isHandset$ | async) === false">
   <a mat-button routerLink="/">Home</a>
-  <a mat-button routerLink="/features">Features</a>
-  <a mat-button routerLink="/pricing">Pricing</a>
+  <a mat-button routerLink="/profile">Profile</a>
+  <!-- Changed from /features to /profile -->
+  <a mat-button routerLink="/movies">Movies</a>
+  <!-- Changed from /pricing to /movies -->
 </mat-toolbar>
 
 <!-- This toolbar will be displayed on screens smaller than 600px -->
@@ -12,7 +14,9 @@
   </button>
   <mat-menu #menu="matMenu">
     <button mat-menu-item routerLink="/">Home</button>
-    <button mat-menu-item routerLink="/features">Features</button>
-    <button mat-menu-item routerLink="/pricing">Pricing</button>
+    <button mat-menu-item routerLink="/profile">Profile</button>
+    <!-- Changed from /features to /profile -->
+    <button mat-menu-item routerLink="/movies">Movies</button>
+    <!-- Changed from /pricing to /movies -->
   </mat-menu>
 </mat-toolbar>
