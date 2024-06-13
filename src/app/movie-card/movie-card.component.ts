@@ -55,7 +55,7 @@ getMovies(): void {
 }
   // Methods related to fetching data
   getUser(): void {
-  let user = localStorage.getItem('User');
+  let user = localStorage.getItem('Username');
   if (!user) {
     console.error('No user found in local storage');
     return;
