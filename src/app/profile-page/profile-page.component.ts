@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FetchApiDataService } from '../fetch-api-data.service';
 import { Router } from '@angular/router';
+import { DatePipe } from '@angular/common';
+
 
 @Component({
   selector: 'app-profile-page',
@@ -28,7 +30,8 @@ export class ProfilePageComponent implements OnInit {
 
   constructor(
     public fetchApiData: FetchApiDataService,
-    public router: Router
+    public router: Router,
+    private datePipe: DatePipe //Inject DatePipe
   ) {}
 
   public ngOnInit(): void {
@@ -73,7 +76,7 @@ export class ProfilePageComponent implements OnInit {
 
     this.fetchApiData.getUser(user.Username).subscribe((res: any) => {
       this.userData = res;
-      if (this.userData.FavoriteMovies) {
+this.userData.Birthday = this.datePipe.transform(this.userData.Birthday, 'yyyy-MM-dd', 'UTC');      if (this.userData.FavoriteMovies) {
         this.filterFavoriteMovies();
       }
     });
@@ -96,10 +99,12 @@ export class ProfilePageComponent implements OnInit {
         }
         localStorage.setItem('Username', JSON.stringify(this.userData));
         this.filterFavoriteMovies();
-      },
-      error: (err: any) => console.error(err)
-    });
-  }
+        // Log a message when a movie is removed from the favorites
+      console.log(`Movie with ID ${MovieID} was removed from the favorites.`);
+    },
+    error: (err: any) => console.error(err)
+  });
+}
 
   public resetUser(): void {
     this.userData = {};

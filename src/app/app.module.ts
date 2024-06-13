@@ -14,6 +14,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatIconModule } from '@angular/material/icon'; 
 import { FormsModule } from '@angular/forms';
+import { DatePipe } from '@angular/common';
 
 import { AppComponent } from './app.component';
 import { UserRegistrationFormComponent } from './user-registration-form/user-registration-form.component';
@@ -21,7 +22,6 @@ import { UserLoginFormComponent } from './user-login-form/user-login-form.compon
 import { MovieCardComponent } from './movie-card/movie-card.component';
 import { WelcomePageComponent } from './welcome-page/welcome-page.component';
 import { ProfilePageComponent } from './profile-page/profile-page.component';
-
 
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { SynopsisComponent } from './synopsis/synopsis.component';
@@ -73,7 +73,7 @@ const appRoutes: Routes = [
     MatIconModule,
     FlexLayoutModule
   ],
-  providers: [FetchApiDataService],
+  providers: [FetchApiDataService, DatePipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
