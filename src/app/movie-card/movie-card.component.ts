@@ -40,7 +40,6 @@ export class MovieCardComponent {
 }
 
   ngOnInit(): void {
-      this.getMovies();
       this.getUser();
     }
 
@@ -78,6 +77,8 @@ getMovies(): void {
   this.fetchApiData.getUser(Username).subscribe((resp: any) => {
     this.user = resp;
     this.favoriteMovies = this.user.FavoriteMovies;
+        // Call getMovies after the user data is loaded
+     this.getMovies();
   }, (error: any) => {
     console.error('Error fetching user data:', error);
   });
