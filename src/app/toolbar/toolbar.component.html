@@ -1,1 +1,18 @@
-<p>toolbar works!</p>
+<!-- This toolbar will be displayed on screens larger than 599px -->
+<mat-toolbar color="primary" *ngIf="(isHandset$ | async) === false">
+  <a mat-button routerLink="/">Home</a>
+  <a mat-button routerLink="/features">Features</a>
+  <a mat-button routerLink="/pricing">Pricing</a>
+</mat-toolbar>
+
+<!-- This toolbar will be displayed on screens smaller than 600px -->
+<mat-toolbar color="primary" *ngIf="(isHandset$ | async) === true">
+  <button mat-icon-button [matMenuTriggerFor]="menu">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item routerLink="/">Home</button>
+    <button mat-menu-item routerLink="/features">Features</button>
+    <button mat-menu-item routerLink="/pricing">Pricing</button>
+  </mat-menu>
+</mat-toolbar>
