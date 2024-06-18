@@ -36,9 +36,10 @@ export class ProfilePageComponent implements OnInit {
   ) {}
 
   public ngOnInit(): void {
+    this.loadData();
     this.getMovies();
     this.getUser(); 
-    this.loadData();
+   
   }
 
   private getMovies(): void {

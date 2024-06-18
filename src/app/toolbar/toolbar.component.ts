@@ -22,4 +22,7 @@ export class ToolbarComponent {
     localStorage.clear();
     this.router.navigate(['welcome']); // Redirect to login page
   }
+   isLoggedIn(): boolean {
+    return !!localStorage.getItem('token'); // Replace 'token' with the key you use to store the token
+  }
 }
