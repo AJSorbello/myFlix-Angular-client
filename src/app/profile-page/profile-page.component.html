@@ -1,11 +1,11 @@
-<mat-card>
+<mat-card class="profile-card">
   <mat-card-header>
     <mat-card-title>User Profile</mat-card-title>
   </mat-card-header>
   <mat-card-content>
-    <form>
-      <mat-form-field style="margin-right: 10px">
-        <label>Username</label>
+    <form class="profile-form">
+      <mat-form-field class="form-field">
+        <mat-label>Username</mat-label>
         <input
           matInput
           [(ngModel)]="userData.Username"
@@ -15,8 +15,8 @@
           required
         />
       </mat-form-field>
-      <mat-form-field style="margin-right: 10px">
-        <label>Password</label>
+      <mat-form-field class="form-field">
+        <mat-label>Password</mat-label>
         <input
           matInput
           [(ngModel)]="userData.password"
@@ -26,8 +26,8 @@
           required
         />
       </mat-form-field>
-      <mat-form-field style="margin-right: 10px">
-        <label>Email</label>
+      <mat-form-field class="form-field">
+        <mat-label>Email</mat-label>
         <input
           matInput
           [(ngModel)]="userData.Email"
@@ -37,8 +37,8 @@
           required
         />
       </mat-form-field>
-      <mat-form-field style="margin-right: 10px">
-        <label>Birthday</label>
+      <mat-form-field class="form-field">
+        <mat-label>Birthday</mat-label>
         <input
           matInput
           [(ngModel)]="userData.Birthday"
@@ -49,42 +49,41 @@
       </mat-form-field>
     </form>
   </mat-card-content>
-  <mat-card-actions>
-    <button
-      mat-raised-button
-      (click)="updateUser()"
-      color="primary"
-      style="margin-right: 10px"
-    >
-      Update
-    </button>
-    <button
-      mat-raised-button
-      (click)="resetUser()"
-      color="primary"
-      style="margin-right: 10px"
-    >
-      Reset
-    </button>
+  <mat-card-actions class="card-actions">
+    <div class="button-container">
+      <button
+        mat-raised-button
+        (click)="updateUser()"
+        color="primary"
+        class="action-button"
+      >
+        Update
+      </button>
+      <button
+        mat-raised-button
+        (click)="resetUser()"
+        color="primary"
+        class="action-button"
+      >
+        Reset
+      </button>
+    </div>
   </mat-card-actions>
   <!-- Favorite Movies -->
   <mat-card-title>Favorite Movies</mat-card-title>
-  <div style="display: flex">
-    <mat-card
-      *ngFor="let movie of favoriteMovies"
-      style="width: 280px; margin-right: 10px"
-    >
+  <div class="favorite-movies">
+    <mat-card *ngFor="let movie of favoriteMovies" class="movie-card">
       <mat-card-header>
         <mat-card-title>{{ movie.Title }}</mat-card-title>
         <mat-card-subtitle>Directed by: {{ movie.director }}</mat-card-subtitle>
       </mat-card-header>
       <img [src]="movie.image" alt="{{ movie.Title }}" />
-      <mat-card-actions>
+      <mat-card-actions class="card-actions">
         <button
           mat-raised-button
           (click)="deleteFavoriteMovie(movie._id)"
           color="primary"
-          style="margin-right: 10px"
+          class="action-button"
         >
           Remove from favorite
         </button>
