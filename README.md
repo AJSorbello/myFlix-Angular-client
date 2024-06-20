@@ -44,3 +44,22 @@ This project uses Angular Material for UI components and styling, HttpClientModu
 ## Further help
 
 For more help on the Angular CLI, use `ng help` or visit the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+
+For more help on Angular Material, visit the [Angular Material Documentation](https://material.angular.io/docs
+
+## Installation
+
+To install the project, run the following command in your terminal:
+- git clone  https://github.com/AJSorbello/myFlix-Angular-client.git
+
+Navigate to the project directory:
+- cd MyFlixAngularClient
+
+Install the dependencies:
+- npm install
+
+Start the development server:
+- ng serve
+
+Open your browser and navigate to http://localhost:4200/ to view the application.
+
