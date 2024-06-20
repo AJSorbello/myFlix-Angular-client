@@ -37,6 +37,9 @@ import { UpdateUserFormComponent } from './update-user-form/update-user-form.com
 import { GenreComponent } from './genre/genre.component';
 import { FetchApiDataService } from './fetch-api-data.service'; // Import the service at the top of the file
 
+/**
+ * The routes for the Angular application.
+ */
 const appRoutes: Routes = [
    { path: 'welcome', component: WelcomePageComponent },
    { path: 'movies', component: MovieCardComponent },
@@ -44,6 +47,9 @@ const appRoutes: Routes = [
    { path: '', redirectTo: 'welcome', pathMatch: 'full' },
 ];
 
+/**
+ * The main application module, responsible for setting up the application's components, services, and modules.
+ */
 @NgModule({
   declarations: [
     AppComponent,

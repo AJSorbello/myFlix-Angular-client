@@ -1,3 +1,9 @@
+/**
+ * @description This component handles the user update form where users can update their profile information.
+ * 
+ * @module UpdateUserFormComponent
+ * @component
+ */
 import { Component } from '@angular/core';
 
 @Component({

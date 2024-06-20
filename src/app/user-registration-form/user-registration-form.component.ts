@@ -1,4 +1,14 @@
-// src/app/user-registration-form/user-registration-form.component.ts
+/**
+ * @description This component handles the user registration form, allowing new users to create an account.
+ * 
+ * @module UserRegistrationFormComponent
+ * @component
+ * @implements OnInit
+ * 
+ * @param {FetchApiDataService} fetchApiData - Service for fetching API data.
+ * @param {MatDialogRef} dialogRef - Reference to the dialog opened.
+ * @param {MatSnackBar} snackBar - Service for displaying snack-bar notifications.
+ */
 import { Component, OnInit, Input } from '@angular/core';
 
 // You'll use this import to close the dialog on success
@@ -17,29 +27,35 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class UserRegistrationFormComponent implements OnInit {
 
-    @Input() userData = { Fullname: '', Username: '', Password: '', Email: '', Birthday: '' };
+  @Input() userData = { Fullname: '', Username: '', Password: '', Email: '', Birthday: '' };
 
-    constructor(
-        public fetchApiData: FetchApiDataService,
-        public dialogRef: MatDialogRef<UserRegistrationFormComponent>,
-        public snackBar: MatSnackBar
-    ) { }
+  constructor(
+    public fetchApiData: FetchApiDataService,
+    public dialogRef: MatDialogRef<UserRegistrationFormComponent>,
+    public snackBar: MatSnackBar
+  ) { }
 
-    ngOnInit(): void {
-    }
+  /**
+   * @description Lifecycle hook that is called after data-bound properties of a directive are initialized.
+   */
+  ngOnInit(): void { }
 
-    // This is the function responsible for sending the form inputs to the backend
- registerUser(): void {
-  this.fetchApiData.userRegistration(this.userData).subscribe((response) => {
-    this.dialogRef.close(); // This will close the modal on success!
-    this.snackBar.open("User create success", 'OK', {
-      duration: 2000
+  /**
+   * @description Registers a new user by calling the userRegistration method of the FetchApiDataService.
+   * If the registration is successful, closes the dialog and displays a success message.
+   * If the registration fails, displays a failure message.
+   */
+  registerUser(): void {
+    this.fetchApiData.userRegistration(this.userData).subscribe((response) => {
+      this.dialogRef.close(); // This will close the modal on success!
+      this.snackBar.open("User create success", 'OK', {
+        duration: 2000
+      });
+    }, (response) => {
+      this.snackBar.open("User create fail", 'OK', {
+        duration: 2000
+      });
     });
-  }, (response) => {
-    this.snackBar.open("User create fail", 'OK', {
-      duration: 2000
-    });
-  });
-}
+  }
 
 }
