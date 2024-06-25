@@ -77,36 +77,38 @@ export class MovieCardComponent implements OnInit {
    * @description Fetches user details from local storage and then fetches the user data from the API.
    */
   getUser(): void {
-    let user = localStorage.getItem('Username');
-    if (!user) {
-      console.error('No user found in local storage');
-      return;
-    }
-
-    let parsedUser;
-    try {
-      parsedUser = JSON.parse(user);
-    } catch (error) {
-      console.error('Error parsing user data from local storage:', error);
-      return;
-    }
-
-    const { Username } = parsedUser;
-    if (!Username) {
-      console.error('No username found in user data');
-      return;
-    }
-
-    this.fetchApiData.getUser(Username).subscribe((resp: any) => {
-      this.user = resp;
-      this.favoriteMovies = this.user.FavoriteMovies;
-      // Call getMovies after the user data is loaded
-      this.getMovies();
-    }, (error: any) => {
-      console.error('Error fetching user data:', error);
-    });
+  const currentUser = localStorage.getItem('currentUser');
+  if (!currentUser) {
+    console.error('No user found in local storage');
+    this.router.navigate(['login']); // Redirect to login if no user found
+    return;
   }
 
+  let parsedUser;
+  try {
+    parsedUser = JSON.parse(currentUser);
+  } catch (error) {
+    console.error('Error parsing user data from local storage:', error);
+    return;
+  }
+
+  const { Username } = parsedUser;
+  if (!Username) {
+    console.error('No username found in user data');
+    return;
+  }
+
+  this.username = Username; // Store the username for later use
+
+  this.fetchApiData.getUser(Username).subscribe((resp: any) => {
+    this.user = resp;
+    this.favoriteMovies = this.user.FavoriteMovies;
+    // Call getMovies after the user data is loaded
+    this.getMovies();
+  }, (error: any) => {
+    console.error('Error fetching user data:', error);
+  });
+}
   /**
    * @description Toggles a movie between favorite and non-favorite.
    * @param {string} movieId - The ID of the movie to toggle.

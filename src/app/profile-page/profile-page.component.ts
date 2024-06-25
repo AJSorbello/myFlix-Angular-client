@@ -72,26 +72,32 @@ export class ProfilePageComponent implements OnInit {
    * @description Loads user data and movies from the API, and formats the user's birthday.
    */
   private loadData(): void {
-    const username = localStorage.getItem('Username');
-    if (!username) {
-      console.error('Username not found in local storage');
-      return;
-    }
-
-    forkJoin({
-      movies: this.fetchApiData.getAllMovies(),
-      user: this.fetchApiData.getUser(JSON.parse(username).Username)
-    }).subscribe(({ movies, user }) => {
-      this.movies = movies.map((movie: any) => ({
-        ...movie,
-        director: movie.Director.Name,
-        image: movie.ImagePath
-      }));
-
-      this.userData = user;
-      this.userData.Birthday = this.datePipe.transform(this.userData.Birthday, 'yyyy-MM-dd', 'UTC');
-    });
+  const currentUser = localStorage.getItem('currentUser');
+  if (!currentUser) {
+    console.error('User not found in local storage');
+    this.router.navigate(["welcome"]); // Redirect to welcome page if user not found
+    return;
   }
+
+  const user = JSON.parse(currentUser);
+
+  forkJoin({
+    movies: this.fetchApiData.getAllMovies(),
+    user: this.fetchApiData.getUser(user.Username)
+  }).subscribe(({ movies, user }) => {
+    this.movies = movies.map((movie: any) => ({
+      ...movie,
+      director: movie.Director.Name,
+      image: movie.ImagePath
+    }));
+
+    this.userData = user;
+    this.userData.Birthday = this.datePipe.transform(this.userData.Birthday, 'yyyy-MM-dd', 'UTC');
+    if (this.userData.FavoriteMovies) {
+      this.filterFavoriteMovies();
+    }
+  });
+}
 
   /**
    * @description Filters the list of movies to show only the user's favorite movies.
@@ -104,34 +110,23 @@ export class ProfilePageComponent implements OnInit {
    * @description Fetches user details from local storage and the API.
    */
   private getUser(): void {
-    let storedUser = localStorage.getItem('Username');
-    console.log('Stored user:', storedUser);
-    if (!storedUser) {
-      console.error('No user found in local storage');
-      return;
-    }
-
-    let user;
-    try {
-      user = JSON.parse(storedUser);
-    } catch (error) {
-      console.error('Failed to parse user:', error);
-      return;
-    }
-
-    if (!user) {
-      console.error('User not found in local storage');
-      return;
-    }
-
-    this.fetchApiData.getUser(user.Username).subscribe((res: any) => {
-      this.userData = res;
-      this.userData.Birthday = this.datePipe.transform(this.userData.Birthday, 'yyyy-MM-dd', 'UTC');
-      if (this.userData.FavoriteMovies) {
-        this.filterFavoriteMovies();
-      }
-    });
+  const currentUser = localStorage.getItem('currentUser');
+  if (!currentUser) {
+    console.error('No user found in local storage');
+    this.router.navigate(["welcome"]); // Redirect to welcome page if user not found
+    return;
   }
+
+  const user = JSON.parse(currentUser);
+
+  this.fetchApiData.getUser(user.Username).subscribe((res: any) => {
+    this.userData = res;
+    this.userData.Birthday = this.datePipe.transform(this.userData.Birthday, 'yyyy-MM-dd', 'UTC');
+    if (this.userData.FavoriteMovies) {
+      this.filterFavoriteMovies();
+    }
+  });
+}
 
   /**
    * @description Removes a movie from the user's list of favorite movies.
