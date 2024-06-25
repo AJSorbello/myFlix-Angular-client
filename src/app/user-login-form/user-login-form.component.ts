@@ -42,21 +42,35 @@ export class UserLoginFormComponent implements OnInit {
    * If the login is successful, stores the token and user information in local storage, closes the dialog, displays a success message, and navigates to the movies page.
    * If the login fails, displays a failure message.
    */
-  loginUser(): void {
-    this.fetchApiData.userLogin(this.userData).subscribe((result) => {
-      console.log(result);
-      localStorage.setItem('token', result.token);  
-      localStorage.setItem('Username', JSON.stringify(result.user)); // Store the entire user object
-      this.dialogRef.close(); // This will close the modal on success!
-      this.snackBar.open("User login success", 'OK', {
-        duration: 2000
-      });
-      this.router.navigate(['movies']);  
-    }, 
-    (result) => {
-      this.snackBar.open("User login fail", 'OK', {
-        duration: 2000
-      });
-    });
+loginUser(event?: Event): void {
+  if (event) {
+    event.preventDefault();
   }
-}
+  this.fetchApiData.userLogin(this.userData).subscribe(
+    (response) => {
+      // Logic for a successful user login goes here!
+      this.dialogRef.close(); // This will close the modal on success!
+      console.log(response);
+      console.log('response.user:', response.user);
+      console.log('response.user.Username:', response.user.Username);
+      if (response.user && response.user.Username) {
+        localStorage.setItem('token', response.token);
+        localStorage.setItem('currentUser', JSON.stringify(response.user));
+        this.snackBar.open('User login successful', 'OK', {
+          duration: 2000
+        });
+        this.router.navigate(['movies']);
+      } else {
+        console.error('No user found in response');
+      }      
+    },
+    (error) => {
+      // Directly set the message to "User not found" for any login error, ignoring specific status codes
+            event?.preventDefault(); // Attempt to prevent any default browser behavior (though may not be effective here).
+
+      this.snackBar.open("User not found. Please check your credentials.", 'OK', {
+        duration: 2000
+      });
+    }
+  );
+}}
