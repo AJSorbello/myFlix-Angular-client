@@ -1,7 +1,8 @@
 <!-- This toolbar will be displayed on screens larger than 599px -->
 <mat-toolbar color="primary" *ngIf="(isHandset$ | async) === false">
   <!-- Show "Home" only if not logged in -->
-  <a mat-button routerLink="/" *ngIf="!isLoggedIn()">Home</a>
+  <!-- <a mat-button routerLink="/" *ngIf="!isLoggedIn()">Home</a> -->
+  <!-- Hide these links when logged out -->
   <a mat-button routerLink="/profile" *ngIf="isLoggedIn()">Profile</a>
   <a mat-button routerLink="/movies" *ngIf="isLoggedIn()">Movies</a>
   <button mat-button (click)="logout()" *ngIf="isLoggedIn()">Logout</button>
@@ -14,7 +15,8 @@
   </button>
   <mat-menu #menu="matMenu">
     <!-- Show "Home" only if not logged in -->
-    <button mat-menu-item routerLink="/" *ngIf="!isLoggedIn()">Home</button>
+    <!-- <button mat-menu-item routerLink="/" *ngIf="!isLoggedIn()">Home</button> -->
+    <!-- Hide these menu items when logged out -->
     <button mat-menu-item routerLink="/profile" *ngIf="isLoggedIn()">
       Profile
     </button>
